@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
 const protect = require('../middleware/auth');
+const authorizeRole = require('../middleware/authorizeRole');
+const { getParticipants } = require('../controllers/eventController'); // ← ADD THIS
 
 // GET /api/events - public
 router.get('/', async (req, res) => {
@@ -48,21 +50,14 @@ router.put('/:id', protect, async (req, res) => {
 // DELETE /api/events/:id - protected
 router.delete('/:id', protect, async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
-
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    // ✅ only owner can delete
-    if (event.organizer.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    await event.deleteOne();
-    res.json({ message: "Event deleted" });
-
+    await Event.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Event deleted' });
   } catch (err) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: err.message });
   }
 });
+
+// GET /api/events/:id/participants - organizer only
+router.get('/:id/participants', protect, authorizeRole('organizer', 'admin'), getParticipants);
 
 module.exports = router;

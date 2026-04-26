@@ -140,9 +140,3 @@ We followed the **Waterfall Model**:
 * Add event images
 
 ---
-
-## 👩‍💻 Author
-
-* Priyanshi Goyal
-
----

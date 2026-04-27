@@ -138,5 +138,5 @@ We followed the **Waterfall Model**:
 * Add email notifications
 * Improve UI/UX
 * Add event images
-
+MVC Structure
 ---
